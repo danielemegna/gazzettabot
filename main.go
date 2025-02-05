@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -18,5 +18,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(fmt.Sprintf("%s", out))
+
+	var outputTable = string(out)
+	var firstRow = strings.Split(outputTable, "\n")[3]
+	log.Println(firstRow)
+
+	var url = "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/399"
+	cmd = exec.Command(
+		"./lib/xdcc", "get", url,
+	)
+
+	log.Println("Downloading " + url + " ....")
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Download completed!")
 }
