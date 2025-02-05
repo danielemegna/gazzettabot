@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"strconv"
+	"time"
 )
 
 func main() {
 	log.Println("==== Starting Gazzetta Bot")
-	var cmd = exec.Command("./lib/xdcc", "search", "gazzetta", "sport", "4", "febbraio")
+	var todayDay = time.Now().Day()
+	var cmd = exec.Command(
+		"./lib/xdcc", "search", "gazzetta", "sport", strconv.Itoa(todayDay), "febbraio",
+	)
 	var out, err = cmd.Output()
 	if err != nil {
 		log.Fatal(err)
