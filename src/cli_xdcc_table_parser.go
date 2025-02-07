@@ -2,6 +2,7 @@ package gazzettabot
 
 import (
 	"github.com/samber/lo"
+	"regexp"
 	"strings"
 )
 
@@ -14,11 +15,12 @@ func ParseTable(tableString string) []IrcFile {
 	var rowsWithoutHeaders = rows[3:]
 	var foundFiles = rowsWithoutHeaders[:len(rowsWithoutHeaders)-2]
 	return lo.Map(foundFiles, func(row string, _ int) IrcFile {
-		var parts = strings.Split(row, "|")
+		var r, _ = regexp.Compile(`\|\s*(\S+)\s*\|\s*(\S+)\s*\|\s+(\S+)\s+\|`)
+		var matches = r.FindStringSubmatch(row)
 		return IrcFile{
-			Name: strings.TrimSpace(parts[1]),
+			Name:           matches[1],
 			SizeInMegaByte: 74,
-			Url: "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/146",
+			Url:            matches[3],
 		}
 	})
 }

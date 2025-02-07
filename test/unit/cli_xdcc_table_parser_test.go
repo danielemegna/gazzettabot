@@ -41,6 +41,8 @@ func TestParseFullTable(t *testing.T) {
 	assert.Equal(t, 74, files[0].SizeInMegaByte)
 	assert.Equal(t, "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/146", files[0].Url)
 	assert.Equal(t, "La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.3.Febbraio.2025.pdf", files[1].Name)
+	assert.Equal(t, 74, files[1].SizeInMegaByte)
+	assert.Equal(t, "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/147", files[1].Url)
 }
 
 func asSingleString(inputLines []string) string {
