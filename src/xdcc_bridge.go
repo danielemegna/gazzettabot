@@ -5,6 +5,7 @@ type XdccBridge interface {
 }
 
 type IrcFile struct {
-	name string
-	url string
+	Name string
+	SizeInMegaByte int
+	Url string
 }

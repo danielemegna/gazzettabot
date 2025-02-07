@@ -12,3 +12,12 @@ func TestSearchWithoutResults(t *testing.T) {
 	assert.Empty(t, files)
 	assert.Equal(t, []IrcFile{}, files)
 }
+
+func TestSearchWithSomeResults(t *testing.T) {
+	var bridge = CliXdccBridge{}
+	var files = bridge.Search("gazzetta dello sport")
+	assert.NotEmpty(t, files)
+	assert.Contains(t, files[0].Name, "Gazzetta.dello.Sport")
+	assert.Greater(t, files[0].SizeInMegaByte, 0)
+	assert.Contains(t, files[0].Url, "irc://")
+}
