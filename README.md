@@ -19,6 +19,8 @@ $ docker run --rm -it -v $PWD:/app -w /app golang:1.23.3 bash
 and run tests with
 ```
 # go test ./... -json | tparse
+# go test ./.../unit -json | tparse --all
+# go test ./.../integration -json | tparse --all
 # go test ./... -run TestRunSingleTest -json | tparse --all
 ```
 
