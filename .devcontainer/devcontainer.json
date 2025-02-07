@@ -42,8 +42,9 @@
   // Environment and pre-defined variables may be referenced in the values.
   "containerEnv": {
     "XDCC_BINARY": "/workspaces/gazzettabot/lib/xdcc"
-  }
-
-  // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "devcontainer"
+  },
+  
+  // Finalizes container setup when a dev container is created. It happens after updateContentCommand and
+  // once the dev container has been assigned to a user for the first time. 
+  "postCreateCommand": "go install github.com/mfridman/tparse@latest"
 }
