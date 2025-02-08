@@ -1,9 +1,11 @@
 package gazzettabot
 
 import (
-	"github.com/samber/lo"
 	"regexp"
+	"strconv"
 	"strings"
+
+	"github.com/samber/lo"
 )
 
 func ParseTable(tableString string) []IrcFile {
@@ -15,11 +17,12 @@ func ParseTable(tableString string) []IrcFile {
 	var rowsWithoutHeaders = rows[3:]
 	var foundFiles = rowsWithoutHeaders[:len(rowsWithoutHeaders)-2]
 	return lo.Map(foundFiles, func(row string, _ int) IrcFile {
-		var r, _ = regexp.Compile(`\|\s*(\S+)\s*\|\s*(\S+)\s*\|\s+(\S+)\s+\|`)
+		var r, _ = regexp.Compile(`\|\s*(\S+)\s*\|\s*(\d+)MB\s*\|\s+(\S+)\s+\|`)
 		var matches = r.FindStringSubmatch(row)
+		var sizeInMegaByte, _ = strconv.Atoi(matches[2])
 		return IrcFile{
 			Name:           matches[1],
-			SizeInMegaByte: 74,
+			SizeInMegaByte: sizeInMegaByte,
 			Url:            matches[3],
 		}
 	})

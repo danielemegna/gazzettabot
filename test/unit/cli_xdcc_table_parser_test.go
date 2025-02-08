@@ -20,9 +20,6 @@ var FULL_TABLE_STRING = []string{
 	"+------------------------------------------------------------------------------------------------------------------------------------------------------+",
 	"|       La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.3.Febbraio.2025.pdf         | 74MB  |  irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/146    |",
 	"|       La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.3.Febbraio.2025.pdf        | 74MB  |  irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/147    |",
-	"| La.Gazzetta.dello.Sport.Ed.Puglia.e.Basilicata.COMPLETA.3.Febbraio.2025.pdf   | 73MB  |  irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/148    |",
-	"|         La.Gazzetta.dello.Sport.Ed.Roma.COMPLETA.3.Febbraio.2025.pdf          | 73MB  |  irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/149    |",
-	"|  La.Gazzetta.dello.Sport.Ed.Sicilia.e.Calabria.COMPLETA.3.Febbraio.2025.pdf   | 74MB  |  irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/150    |",
 	"|       La.Gazzetta.dello.Sport.3.Febbraio.2025.versione.provvisoria.pdf        | 42MB  |  irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/20     |",
 	"|       La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.4.Febbraio.2025.pdf         | 62MB  |  irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/289    |",
 	"+------------------------------------------------------------------------------------------------------------------------------------------------------+",
@@ -35,14 +32,31 @@ func TestParseEmptyTable(t *testing.T) {
 }
 
 func TestParseFullTable(t *testing.T) {
-	var files = ParseTable(asSingleString(FULL_TABLE_STRING))
-	assert.Len(t, files, 7)
-	assert.Equal(t, "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.3.Febbraio.2025.pdf", files[0].Name)
-	assert.Equal(t, 74, files[0].SizeInMegaByte)
-	assert.Equal(t, "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/146", files[0].Url)
-	assert.Equal(t, "La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.3.Febbraio.2025.pdf", files[1].Name)
-	assert.Equal(t, 74, files[1].SizeInMegaByte)
-	assert.Equal(t, "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/147", files[1].Url)
+	var actual = ParseTable(asSingleString(FULL_TABLE_STRING))
+
+	var expectedParsedFiles = []IrcFile{
+		{
+			Name:           "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.3.Febbraio.2025.pdf",
+			SizeInMegaByte: 74,
+			Url:            "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/146",
+		},
+		{
+			Name:           "La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.3.Febbraio.2025.pdf",
+			SizeInMegaByte: 74,
+			Url:            "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/147",
+		},
+		{
+			Name:           "La.Gazzetta.dello.Sport.3.Febbraio.2025.versione.provvisoria.pdf",
+			SizeInMegaByte: 42,
+			Url:            "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/20",
+		},
+		{
+			Name:           "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.4.Febbraio.2025.pdf",
+			SizeInMegaByte: 62,
+			Url:            "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/289",
+		},
+	}
+	assert.Equal(t, expectedParsedFiles, actual)
 }
 
 func asSingleString(inputLines []string) string {
