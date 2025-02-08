@@ -19,11 +19,12 @@ func (this CliXdccBridge) Search(query string) []IrcFile {
 
 func execSearch(xdccBinaryFilepath string, query string) string {
 	var command = exec.Command(xdccBinaryFilepath, "search", query)
-	var commandOutput, err = command.Output()
+	var out, err = command.Output()
+	var commandOutput = string(out)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err, " - ", commandOutput)
 	}
-	return string(commandOutput)
+	return commandOutput
 }
 
 func xdccBinaryFilepathFromEnv() string {
