@@ -4,7 +4,9 @@ import (
 	. "danielemegna/gazzettabot/src"
 	"github.com/samber/lo"
 	"log"
+	"os"
 	"os/exec"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -37,11 +39,19 @@ func selectFileToDownload(files []IrcFile) IrcFile {
 		return files[0]
 	}
 
-	var noProvvisorie = lo.Filter(files, func(file IrcFile, _ int) bool {
+	var alreadyDownloaded = getAlreadyDownloadedFileNames()
+	var noAlreadyDownloaded = lo.Filter(files, func(file IrcFile, _ int) bool {
+		return !slices.Contains(alreadyDownloaded, file.Name)
+	})
+	if len(noAlreadyDownloaded) == 0 {
+		log.Fatal("Cannot find new file to download!")
+	}
+
+	var noProvvisorie = lo.Filter(noAlreadyDownloaded, func(file IrcFile, _ int) bool {
 		return !strings.Contains(file.Name, "provvisoria")
 	})
 	if len(noProvvisorie) == 0 {
-		return smallest(files)
+		return smallest(noAlreadyDownloaded)
 	}
 
 	var noEdizioniLocali = lo.Filter(noProvvisorie, func(file IrcFile, _ int) bool {
@@ -58,4 +68,12 @@ func smallest(files []IrcFile) IrcFile {
 	return lo.MinBy(files, func(a IrcFile, b IrcFile) bool {
 		return a.SizeInMegaByte < b.SizeInMegaByte // or > ?
 	})
+}
+
+func getAlreadyDownloadedFileNames() []string {
+	var entries, err = os.ReadDir("./download")
+	if err != nil {
+		log.Fatal("Error reading download folder! - ", err)
+	}
+	return lo.Map(entries, func(e os.DirEntry, _ int) string { return e.Name() })
 }
