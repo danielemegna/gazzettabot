@@ -2,8 +2,9 @@ package gazzettabot_test
 
 import (
 	. "danielemegna/gazzettabot/src"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSearchWithoutResults(t *testing.T) {
@@ -15,7 +16,7 @@ func TestSearchWithoutResults(t *testing.T) {
 
 func TestSearchWithSomeResults(t *testing.T) {
 	var bridge = CliXdccBridge{}
-	var files = bridge.Search("gazzetta dello sport")
+	var files = bridge.Search("gazzetta dello sport completa 8 febbraio")
 	assert.NotEmpty(t, files)
 	assert.Contains(t, files[0].Name, "Gazzetta.dello.Sport")
 	assert.Greater(t, files[0].SizeInMegaByte, 0)
