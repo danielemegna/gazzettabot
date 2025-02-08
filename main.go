@@ -1,37 +1,30 @@
 package main
 
 import (
+	. "danielemegna/gazzettabot/src"
 	"log"
 	"os/exec"
 	"strconv"
-	"strings"
 	"time"
 )
 
 func main() {
 	log.Println("==== Starting Gazzetta Bot")
 	var todayDay = time.Now().Day()
-	var cmd = exec.Command(
-		"./lib/xdcc", "search", "gazzetta", "sport", strconv.Itoa(todayDay), "febbraio",
-	)
-	var out, err = cmd.Output()
+	var searchQuery = "gazzetta dello sport completa " + strconv.Itoa(todayDay) + " febbraio"
+
+	var xdccBridge = CliXdccBridge{}
+	var foundFiles = xdccBridge.Search(searchQuery)
+
+	// TODO better select file to download
+	var fileToDownload = foundFiles[0]
+
+	log.Println("Downloading " + fileToDownload.Name + " ....")
+	var cmd = exec.Command("./lib/xdcc", "get", fileToDownload.Url, "-o", "./download")
+	var output, err = cmd.Output()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err, " - ", string(output))
 	}
 
-	var outputTable = string(out)
-	var firstRow = strings.Split(outputTable, "\n")[3]
-	log.Println(firstRow)
-
-	var url = "irc://irc.arabaphenix.it/#arabafenice/ArA|Edicola|01/399"
-	cmd = exec.Command(
-		"./lib/xdcc", "get", url,
-	)
-
-	log.Println("Downloading " + url + " ....")
-	err = cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
 	log.Println("Download completed!")
 }
