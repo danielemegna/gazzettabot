@@ -38,3 +38,11 @@ If you want to open an additional bash session in the vscode container:
 $ docker exec -it -w /workspaces/$(basename $PWD) <container-name> bash
 # go test .....
 ```
+
+### On the fly docker build
+
+Build the executable with a temporary alpine go container:
+
+```
+$ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main main.go
+```
