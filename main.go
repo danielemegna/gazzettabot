@@ -65,6 +65,7 @@ func selectFileToDownload(files []IrcFile) IrcFile {
 }
 
 func smallest(files []IrcFile) IrcFile {
+	log.Println("Taking smallest from filtered: " + IrcFilesToString(files))
 	return lo.MinBy(files, func(a IrcFile, b IrcFile) bool {
 		return a.SizeInMegaByte < b.SizeInMegaByte // or > ?
 	})

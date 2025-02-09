@@ -49,7 +49,7 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main
 
 ### Backlog
 
-- [ ] print filtered files before select
+- [x] print filtered files before select
 - [ ] prioritize Ed.Lombardia before others
 - [ ] month to italian string
 - [ ] add year to search string
