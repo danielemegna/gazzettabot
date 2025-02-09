@@ -8,6 +8,7 @@ import (
 
 type XdccBridge interface {
 	Search(query string) []IrcFile
+	Download(ircFileUrl string)
 }
 
 type IrcFile struct {

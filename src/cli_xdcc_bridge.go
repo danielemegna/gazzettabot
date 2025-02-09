@@ -17,6 +17,18 @@ func (this CliXdccBridge) Search(query string) []IrcFile {
 	return files
 }
 
+func (this CliXdccBridge) Download(ircFileUrl string) {
+	log.Println("Downloading file " + ircFileUrl + " ...")
+	var xdccBinaryFilepath = xdccBinaryFilepathFromEnv()
+	var cmd = exec.Command(xdccBinaryFilepath, "get", ircFileUrl, "-o", "./download")
+	var output, err = cmd.Output()
+	if err != nil {
+		log.Fatal("Error during file download! - ", err, " - ", string(output))
+	}
+
+	log.Println("Download completed!")
+}
+
 func execSearch(xdccBinaryFilepath string, query string) string {
 	var command = exec.Command(xdccBinaryFilepath, "search", query)
 	var out, err = command.Output()

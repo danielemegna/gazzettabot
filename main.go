@@ -5,30 +5,26 @@ import (
 	"github.com/samber/lo"
 	"log"
 	"os"
-	"os/exec"
 	"slices"
 	"strconv"
 	"strings"
 	"time"
 )
 
+var xdccBridge XdccBridge = CliXdccBridge{}
+
 func main() {
 	log.Println("==== Starting Gazzetta Bot")
+
 	var todayDay = time.Now().Day()
 	var searchQuery = "gazzetta dello sport completa " + strconv.Itoa(todayDay) + " febbraio"
-
-	var xdccBridge = CliXdccBridge{}
 	var foundFiles = xdccBridge.Search(searchQuery)
 
 	var fileToDownload = selectFileToDownload(foundFiles)
-	log.Println("Downloading " + fileToDownload.Name + " ....")
-	var cmd = exec.Command("./lib/xdcc", "get", fileToDownload.Url, "-o", "./download")
-	var output, err = cmd.Output()
-	if err != nil {
-		log.Fatal(err, " - ", string(output))
-	}
+	log.Println("File selected for download: " + fileToDownload.Name)
 
-	log.Println("Download completed!")
+	xdccBridge.Download(fileToDownload.Url)
+	log.Println("==== Closing Gazzetta Bot")
 }
 
 func selectFileToDownload(files []IrcFile) IrcFile {
