@@ -41,7 +41,8 @@
   // Set of name-value pairs that sets or overrides environment variables for the container.
   // Environment and pre-defined variables may be referenced in the values.
   "containerEnv": {
-    "XDCC_BINARY": "/workspaces/gazzettabot/lib/xdcc"
+    "XDCC_BINARY": "/workspaces/gazzettabot/lib/xdcc",
+    "DOWNLOAD_FOLDER": "/workspaces/gazzettabot/download"
   },
   
   // Finalizes container setup when a dev container is created. It happens after updateContentCommand and

@@ -57,4 +57,4 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main
 - [ ] take another random file on many files with same name (already downloaded)
 - [x] [refactor] extract download operation in XdccBridge
 - [ ] [refactor] improve readability on selectFileToDownload: try filter & download on too much filter
-- [ ] [refactor] download folder path as env variable
+- [x] [refactor] download folder path as env variable

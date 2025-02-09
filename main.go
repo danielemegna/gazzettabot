@@ -76,9 +76,19 @@ func smallest(files []IrcFile) IrcFile {
 }
 
 func getAlreadyDownloadedFileNames() []string {
-	var entries, err = os.ReadDir("./download")
+	var entries, err = os.ReadDir(downloadFolderPathFromEnv())
 	if err != nil {
 		log.Fatal("Error reading download folder! - ", err)
 	}
 	return lo.Map(entries, func(e os.DirEntry, _ int) string { return e.Name() })
+}
+
+// TODO remove duplication of this snippet also in CliXdccBridge
+func downloadFolderPathFromEnv() string { return getFromEnv("DOWNLOAD_FOLDER") }
+func getFromEnv(varName string) string {
+	var value, defined = os.LookupEnv(varName)
+	if !defined {
+		log.Fatal(varName + " environment variable not defined!")
+	}
+	return value
 }

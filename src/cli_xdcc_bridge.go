@@ -18,14 +18,18 @@ func (this CliXdccBridge) Search(query string) []IrcFile {
 
 func (this CliXdccBridge) Download(ircFileUrl string) {
 	log.Println("Downloading file " + ircFileUrl + " ...")
+	execDownload(ircFileUrl)
+	log.Println("Download completed!")
+}
+
+func execDownload(ircFileUrl string) {
 	var xdccBinaryFilepath = xdccBinaryFilepathFromEnv()
-	var cmd = exec.Command(xdccBinaryFilepath, "get", ircFileUrl, "-o", "./download")
+	var downloadFolderPath = downloadFolderPathFromEnv()
+	var cmd = exec.Command(xdccBinaryFilepath, "get", ircFileUrl, "-o", downloadFolderPath)
 	var output, err = cmd.Output()
 	if err != nil {
 		log.Fatal("Error during file download! - ", err, " - ", string(output))
 	}
-
-	log.Println("Download completed!")
 }
 
 func execSearch(query string) string {
@@ -39,10 +43,12 @@ func execSearch(query string) string {
 	return commandOutput
 }
 
-func xdccBinaryFilepathFromEnv() string {
-	var xdccBinaryFilepath, xdccBinaryDefined = os.LookupEnv("XDCC_BINARY")
-	if !xdccBinaryDefined {
-		log.Fatal("XDCC_BINARY environment variable not defined!")
+func xdccBinaryFilepathFromEnv() string { return getFromEnv("XDCC_BINARY") }
+func downloadFolderPathFromEnv() string { return getFromEnv("DOWNLOAD_FOLDER") }
+func getFromEnv(varName string) string {
+	var value, defined = os.LookupEnv(varName)
+	if !defined {
+		log.Fatal(varName + " environment variable not defined!")
 	}
-	return xdccBinaryFilepath
+	return value
 }
