@@ -11,7 +11,13 @@ import (
 	"time"
 )
 
-var xdccBridge XdccBridge = CliXdccBridge{}
+var XDCC_BINARY_FILEPATH = getFromEnv("XDCC_BINARY")
+var DOWNLOAD_FOLDER_PATH = getFromEnv("DOWNLOAD_FOLDER")
+
+var xdccBridge XdccBridge = CliXdccBridge{
+	XdccBinaryFilepath: XDCC_BINARY_FILEPATH,
+	DownloadFolderPath: DOWNLOAD_FOLDER_PATH,
+}
 
 func main() {
 	log.Println("==== Starting Gazzetta Bot")
@@ -76,15 +82,13 @@ func smallest(files []IrcFile) IrcFile {
 }
 
 func getAlreadyDownloadedFileNames() []string {
-	var entries, err = os.ReadDir(downloadFolderPathFromEnv())
+	var entries, err = os.ReadDir(DOWNLOAD_FOLDER_PATH)
 	if err != nil {
 		log.Fatal("Error reading download folder! - ", err)
 	}
 	return lo.Map(entries, func(e os.DirEntry, _ int) string { return e.Name() })
 }
 
-// TODO remove duplication of this snippet also in CliXdccBridge
-func downloadFolderPathFromEnv() string { return getFromEnv("DOWNLOAD_FOLDER") }
 func getFromEnv(varName string) string {
 	var value, defined = os.LookupEnv(varName)
 	if !defined {
