@@ -50,7 +50,7 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main
 ### Backlog
 
 - [x] print filtered files before select
-- [ ] prioritize Ed.Lombardia before others
+- [x] prioritize Ed.Lombardia before others
 - [ ] month to italian string
 - [ ] add year to search string
 - [ ] try next on download failure: selectFileToDownload should return a prioritized list of files ?

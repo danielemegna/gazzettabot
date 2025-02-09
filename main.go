@@ -57,8 +57,16 @@ func selectFileToDownload(files []IrcFile) IrcFile {
 	var noEdizioniLocali = lo.Filter(noProvvisorie, func(file IrcFile, _ int) bool {
 		return !strings.Contains(file.Name, "Ed")
 	})
+
 	if len(noEdizioniLocali) == 0 {
-		return smallest(noProvvisorie)
+		var edLombardia = lo.Filter(noProvvisorie, func(file IrcFile, _ int) bool {
+			return strings.Contains(file.Name, "Ed.Lombardia")
+		})
+		if len(edLombardia) > 0 {
+			return smallest(edLombardia)
+		} else {
+			return smallest(noProvvisorie)
+		}
 	}
 
 	return smallest(noEdizioniLocali)
