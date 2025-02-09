@@ -1,5 +1,6 @@
 #!/bin/sh
 
+set -x
 SCRIPT_DIR=$(dirname -- "$( readlink -f -- "$0"; )";)
 
 git pull --rebase --autostash
