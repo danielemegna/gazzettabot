@@ -10,8 +10,7 @@ type CliXdccBridge struct{}
 
 func (this CliXdccBridge) Search(query string) []IrcFile {
 	log.Printf("Performing search for query [%s] ...\n", query)
-	var xdccBinaryFilepath = xdccBinaryFilepathFromEnv()
-	var outputString = execSearch(xdccBinaryFilepath, query)
+	var outputString = execSearch(query)
 	var files = ParseTable(outputString)
 	log.Printf("Found %d files!\n", len(files))
 	return files
@@ -29,7 +28,8 @@ func (this CliXdccBridge) Download(ircFileUrl string) {
 	log.Println("Download completed!")
 }
 
-func execSearch(xdccBinaryFilepath string, query string) string {
+func execSearch(query string) string {
+	var xdccBinaryFilepath = xdccBinaryFilepathFromEnv()
 	var command = exec.Command(xdccBinaryFilepath, "search", query)
 	var out, err = command.Output()
 	var commandOutput = string(out)
