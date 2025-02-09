@@ -46,3 +46,15 @@ Build the executable with a temporary alpine go container:
 ```
 $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main main.go
 ```
+
+### Backlog
+
+- [ ] print filtered files before select
+- [ ] prioritize Ed.Lombardia before others
+- [ ] month to italian string
+- [ ] add year to search string
+- [ ] try next on download failure: selectFileToDownload should return a prioritized list of files ?
+- [ ] take another random file on many files with same name (already downloaded)
+- [ ] [refactor] extract download operation in XdccBridge
+- [ ] [refactor] improve readability on selectFileToDownload: try filter & download on too much filter
+- [ ] [refactor] download folder path as env variable
