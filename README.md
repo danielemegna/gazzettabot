@@ -52,6 +52,7 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main
 - [x] print filtered files before select
 - [x] prioritize Ed.Lombardia before others
 - [x] use `completa` just as another prioritization filter (remove it from query)
+- [x] optimize update sh script
 - [ ] sh script to clean download old folder
 - [ ] month to italian string
 - [ ] add year to search string
