@@ -56,14 +56,14 @@ func selectFileToDownload(files []IrcFile, alreadyDownloadedFilenames []string) 
 		return !strings.Contains(file.Name, "provvisoria")
 	})
 	if len(noProvvisorie) == 0 {
-		return smallest(noAlreadyDownloaded)
+		return SmallestFrom(noAlreadyDownloaded)
 	}
 
 	var onlyComplete = lo.Filter(noProvvisorie, func(file IrcFile, _ int) bool {
 		return strings.Contains(strings.ToLower(file.Name), "completa")
 	})
 	if len(onlyComplete) == 0 {
-		return smallest(noProvvisorie)
+		return SmallestFrom(noProvvisorie)
 	}
 
 	var noEdizioniLocali = lo.Filter(onlyComplete, func(file IrcFile, _ int) bool {
@@ -75,20 +75,13 @@ func selectFileToDownload(files []IrcFile, alreadyDownloadedFilenames []string) 
 			return strings.Contains(strings.ToLower(file.Name), "lombardia")
 		})
 		if len(edLombardia) > 0 {
-			return smallest(edLombardia)
+			return SmallestFrom(edLombardia)
 		} else {
-			return smallest(onlyComplete)
+			return SmallestFrom(onlyComplete)
 		}
 	}
 
-	return smallest(noEdizioniLocali)
-}
-
-func smallest(files []IrcFile) IrcFile {
-	log.Println("Taking smallest from filtered: " + IrcFilesToString(files))
-	return lo.MinBy(files, func(a IrcFile, b IrcFile) bool {
-		return a.SizeInMegaByte < b.SizeInMegaByte
-	})
+	return SmallestFrom(noEdizioniLocali)
 }
 
 func getFromEnv(varName string) string {
