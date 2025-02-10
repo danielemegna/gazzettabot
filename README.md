@@ -62,5 +62,6 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main
 - [x] [refactor] extract download operation in XdccBridge
 - [ ] [refactor] improve readability on selectFileToDownload: try filter & download on too much filter
 - [x] [refactor] add CliXdccBridge integration tests for Download function
+- [ ] [refactor] add FileSystemAlreadyDownloadedFilesProvider integration tests for List function
 - [x] [refactor] remove duplication on env variables reading: move in main and inject?
 - [x] [refactor] download folder path as env variable

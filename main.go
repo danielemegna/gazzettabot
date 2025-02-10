@@ -18,6 +18,9 @@ var xdccBridge XdccBridge = CliXdccBridge{
 	XdccBinaryFilepath: XDCC_BINARY_FILEPATH,
 	DownloadFolderPath: DOWNLOAD_FOLDER_PATH,
 }
+var alreadyDownloadedFilesProvider AlreadyDownloadedFilesProvider = FileSystemAlreadyDownloadedFilesProvider{
+	DownloadFolderPath: DOWNLOAD_FOLDER_PATH,
+}
 
 func main() {
 	log.Println("==== Starting Gazzetta Bot")
@@ -26,14 +29,15 @@ func main() {
 	var searchQuery = "gazzetta dello sport " + strconv.Itoa(todayDay) + " febbraio"
 	var foundFiles = xdccBridge.Search(searchQuery)
 
-	var fileToDownload = selectFileToDownload(foundFiles)
+	var alreadyDownloadedFilenames = alreadyDownloadedFilesProvider.List()
+	var fileToDownload = selectFileToDownload(foundFiles, alreadyDownloadedFilenames)
 	log.Println("File selected for download: " + fileToDownload.Name)
 
 	xdccBridge.Download(fileToDownload.Url)
 	log.Println("==== Closing Gazzetta Bot")
 }
 
-func selectFileToDownload(files []IrcFile) IrcFile {
+func selectFileToDownload(files []IrcFile, alreadyDownloadedFilenames []string) IrcFile {
 	if len(files) == 0 {
 		log.Fatal("Gazzetta not Found !")
 	}
@@ -41,9 +45,8 @@ func selectFileToDownload(files []IrcFile) IrcFile {
 		return files[0]
 	}
 
-	var alreadyDownloaded = getAlreadyDownloadedFileNames()
 	var noAlreadyDownloaded = lo.Filter(files, func(file IrcFile, _ int) bool {
-		return !slices.Contains(alreadyDownloaded, file.Name)
+		return !slices.Contains(alreadyDownloadedFilenames, file.Name)
 	})
 	if len(noAlreadyDownloaded) == 0 {
 		log.Fatal("Cannot find new file to download!")
@@ -86,14 +89,6 @@ func smallest(files []IrcFile) IrcFile {
 	return lo.MinBy(files, func(a IrcFile, b IrcFile) bool {
 		return a.SizeInMegaByte < b.SizeInMegaByte
 	})
-}
-
-func getAlreadyDownloadedFileNames() []string {
-	var entries, err = os.ReadDir(DOWNLOAD_FOLDER_PATH)
-	if err != nil {
-		log.Fatal("Error reading download folder! - ", err)
-	}
-	return lo.Map(entries, func(e os.DirEntry, _ int) string { return e.Name() })
 }
 
 func getFromEnv(varName string) string {
