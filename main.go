@@ -23,7 +23,7 @@ func main() {
 	log.Println("==== Starting Gazzetta Bot")
 
 	var todayDay = time.Now().Day()
-	var searchQuery = "gazzetta dello sport completa " + strconv.Itoa(todayDay) + " febbraio"
+	var searchQuery = "gazzetta dello sport " + strconv.Itoa(todayDay) + " febbraio"
 	var foundFiles = xdccBridge.Search(searchQuery)
 
 	var fileToDownload = selectFileToDownload(foundFiles)
@@ -56,18 +56,25 @@ func selectFileToDownload(files []IrcFile) IrcFile {
 		return smallest(noAlreadyDownloaded)
 	}
 
-	var noEdizioniLocali = lo.Filter(noProvvisorie, func(file IrcFile, _ int) bool {
-		return !strings.Contains(file.Name, "Ed")
+	var onlyComplete = lo.Filter(noProvvisorie, func(file IrcFile, _ int) bool {
+		return strings.Contains(strings.ToLower(file.Name), "completa")
+	})
+	if len(onlyComplete) == 0 {
+		return smallest(noProvvisorie)
+	}
+
+	var noEdizioniLocali = lo.Filter(onlyComplete, func(file IrcFile, _ int) bool {
+		return !strings.Contains(strings.ToLower(file.Name), "ed.")
 	})
 
 	if len(noEdizioniLocali) == 0 {
-		var edLombardia = lo.Filter(noProvvisorie, func(file IrcFile, _ int) bool {
-			return strings.Contains(file.Name, "Ed.Lombardia")
+		var edLombardia = lo.Filter(onlyComplete, func(file IrcFile, _ int) bool {
+			return strings.Contains(strings.ToLower(file.Name), "lombardia")
 		})
 		if len(edLombardia) > 0 {
 			return smallest(edLombardia)
 		} else {
-			return smallest(noProvvisorie)
+			return smallest(onlyComplete)
 		}
 	}
 
