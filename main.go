@@ -26,7 +26,7 @@ func main() {
 	log.Println("==== Starting Gazzetta Bot")
 
 	var todayDay = time.Now().Day()
-	var searchQuery = "GAZZETTA DELLO SPORT " + strconv.Itoa(todayDay) + " FEBBRAIO"
+	var searchQuery = "Gazzetta dello Sport " + strconv.Itoa(todayDay) + " Febbraio"
 	var foundFiles = xdccBridge.Search(searchQuery)
 
 	var alreadyDownloadedFilenames = alreadyDownloadedFilesProvider.List()
