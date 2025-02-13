@@ -57,6 +57,7 @@ func selectFileToDownload(files []IrcFile, alreadyDownloadedFilenames []string) 
 		return !strings.Contains(file.Name, "provvisoria")
 	})
 	if len(noProvvisorie) == 0 {
+		// we are missing ed locali prioritization to lombardia here
 		return SmallestFrom(noAlreadyDownloaded)
 	}
 
