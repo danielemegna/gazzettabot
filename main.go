@@ -2,6 +2,7 @@ package main
 
 import (
 	. "danielemegna/gazzettabot/src"
+	"fmt"
 	"github.com/samber/lo"
 	"log"
 	"os"
@@ -26,7 +27,7 @@ func main() {
 	log.Println("==== Starting Gazzetta Bot")
 
 	var todayDay = time.Now().Day()
-	var searchQuery = "La Gazzetta Sport " + strconv.Itoa(todayDay) + " Febbraio"
+	var searchQuery = "Gazzetta dello Sport " + strconv.Itoa(todayDay) + " Febbraio -" + generateTimestampID()
 	var foundFiles = xdccBridge.Search(searchQuery)
 
 	var alreadyDownloadedFilenames = alreadyDownloadedFilesProvider.List()
@@ -82,6 +83,11 @@ func selectFileToDownload(files []IrcFile, alreadyDownloadedFilenames []string) 
 	}
 
 	return SmallestFrom(noEdizioniLocali)
+}
+
+func generateTimestampID() string {
+	var unixNano = fmt.Sprintf("%d", time.Now().UnixNano())
+	return unixNano[len(unixNano)-6:]
 }
 
 func getFromEnv(varName string) string {
