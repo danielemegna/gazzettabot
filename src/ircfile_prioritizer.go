@@ -16,11 +16,24 @@ func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
 		return !slices.Contains(alreadyDownloadedFilenames, file.Name)
 	})
 
-	var toPrioritize, toUnderrate = chunkByPredicate(noAlreadyDownloaded, func(file IrcFile) bool {
-		return !strings.Contains(file.Name, "provvisoria")
-	})
+	var bottom []IrcFile = []IrcFile{}
 
-	return append(sortBySize(toPrioritize), sortBySize(toUnderrate)...)
+	var toPrioritize, toUnderrate = chunkByPredicate(noAlreadyDownloaded, func(file IrcFile) bool {
+		return strings.Contains(strings.ToLower(file.Name), "completa")
+	})
+	bottom = append(bottom, toUnderrate...)
+
+	toPrioritize, toUnderrate = chunkByPredicate(toPrioritize, func(file IrcFile) bool {
+		return !strings.Contains(strings.ToLower(file.Name), "provvisoria")
+	})
+	bottom = append(bottom, toUnderrate...)
+
+	toPrioritize, toUnderrate = chunkByPredicate(toPrioritize, func(file IrcFile) bool {
+		return !strings.Contains(strings.ToLower(file.Name), "ed")
+	})
+	bottom = append(bottom, toUnderrate...)
+
+	return append(toPrioritize, bottom...)
 }
 
 func chunkByPredicate(files []IrcFile, prioritizationPredicate func(IrcFile) bool) ([]IrcFile, []IrcFile) {
@@ -34,7 +47,7 @@ func chunkByPredicate(files []IrcFile, prioritizationPredicate func(IrcFile) boo
 		toUnderrate = append(toUnderrate, file)
 	}
 
-	return toPrioritize, toUnderrate
+	return sortBySize(toPrioritize), sortBySize(toUnderrate)
 }
 
 func sortBySize(files []IrcFile) []IrcFile {
