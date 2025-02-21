@@ -6,7 +6,10 @@ import (
 	"testing"
 )
 
-var prioritizer = IrcFilePrioritizer{}
+var stubAlreadyDownloadedFilesProvider = StubAlreadyDownloadedFilesProvider{}
+var prioritizer = IrcFilePrioritizer{
+	AlreadyDownloadedFilesProvider: &stubAlreadyDownloadedFilesProvider,
+}
 
 func TestNoFileToPrioritize(t *testing.T) {
 	var actual = prioritizer.SortGazzettaFiles([]IrcFile{})
@@ -47,6 +50,43 @@ func TestPrioritizeSmallestCompletaOnProvvisoria(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestNoFileWhenEverythingAlreadyDownloaded(t *testing.T) {
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{
+		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf",
+		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf",
+	})
+	var files = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 16},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 20},
+	}
+
+	var actual = prioritizer.SortGazzettaFiles(files)
+
+	assert.Equal(t, []IrcFile{}, actual)
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{})
+}
+
+func TestProvvisoriaWhenCompletedAlreadyDownloadedAndNoOtherChoice(t *testing.T) {
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{
+		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf",
+	})
+	var files = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 16},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 20},
+	}
+
+	var actual = prioritizer.SortGazzettaFiles(files)
+
+	var expected = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 20},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
+	}
+	assert.Equal(t, expected, actual)
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{})
+}
+
 /* TEST CASES
  * filter already downloaded file (use the collaborator)
  * prioritize Ed.Lombardia when no complete
@@ -69,3 +109,10 @@ func TestPrioritizeSmallestCompletaOnProvvisoria(t *testing.T) {
 	+La.Gazzetta.dello.Sport.Ed.Sicilia.e.Calabria.21.Febbraio.2025.pdf
 	+La.Gazzetta.dello.Sport.Ed.Verona.21.Febbraio.2025.pdf
 */
+
+type StubAlreadyDownloadedFilesProvider struct{ alreadyDownloadedFiles []string }
+
+func (this StubAlreadyDownloadedFilesProvider) List() []string { return this.alreadyDownloadedFiles }
+func (this *StubAlreadyDownloadedFilesProvider) SetAlreadyDownloadedFiles(files []string) {
+	this.alreadyDownloadedFiles = files
+}

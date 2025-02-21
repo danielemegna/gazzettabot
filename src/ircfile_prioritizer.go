@@ -1,14 +1,22 @@
 package gazzettabot
 
 import (
+	"github.com/samber/lo"
 	"slices"
 	"strings"
 )
 
-type IrcFilePrioritizer struct{}
+type IrcFilePrioritizer struct {
+	AlreadyDownloadedFilesProvider
+}
 
 func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
-	var toPrioritize, toUnderrate = chunkByPredicate(files, func(file IrcFile) bool {
+	var alreadyDownloadedFilenames = this.AlreadyDownloadedFilesProvider.List()
+	var noAlreadyDownloaded = lo.Filter(files, func(file IrcFile, _ int) bool {
+		return !slices.Contains(alreadyDownloadedFilenames, file.Name)
+	})
+
+	var toPrioritize, toUnderrate = chunkByPredicate(noAlreadyDownloaded, func(file IrcFile) bool {
 		return !strings.Contains(file.Name, "provvisoria")
 	})
 
