@@ -50,43 +50,6 @@ func TestPrioritizeSmallestCompletaOnProvvisoria(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestNoFileWhenEverythingAlreadyDownloaded(t *testing.T) {
-	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{
-		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf",
-		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf",
-	})
-	var files = []IrcFile{
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 16},
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 20},
-	}
-
-	var actual = prioritizer.SortGazzettaFiles(files)
-
-	assert.Equal(t, []IrcFile{}, actual)
-	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{})
-}
-
-func TestProvvisoriaWhenCompletedAlreadyDownloadedAndNoOtherChoice(t *testing.T) {
-	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{
-		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf",
-	})
-	var files = []IrcFile{
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 16},
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 20},
-	}
-
-	var actual = prioritizer.SortGazzettaFiles(files)
-
-	var expected = []IrcFile{
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 20},
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
-	}
-	assert.Equal(t, expected, actual)
-	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{})
-}
-
 func TestPrioritizeProvvisoriaOnEdLocaliAndKeepBothSortedBySize(t *testing.T) {
 	var files = []IrcFile{
 		{Name: "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 14},
@@ -212,6 +175,43 @@ func TestEdCompletaShouldBePrioritized(t *testing.T) {
 		{Name: "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.febbraio.2025.pdf"},
 	}
 	assert.Equal(t, expected, actual)
+}
+
+func TestNoFileWhenEverythingAlreadyDownloaded(t *testing.T) {
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{
+		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf",
+		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf",
+	})
+	var files = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 16},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 20},
+	}
+
+	var actual = prioritizer.SortGazzettaFiles(files)
+
+	assert.Equal(t, []IrcFile{}, actual)
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{})
+}
+
+func TestProvvisoriaWhenCompletedAlreadyDownloadedAndNoOtherChoice(t *testing.T) {
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{
+		"La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf",
+	})
+	var files = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 16},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 20},
+	}
+
+	var actual = prioritizer.SortGazzettaFiles(files)
+
+	var expected = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 20},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf", SizeInMegaByte: 30},
+	}
+	assert.Equal(t, expected, actual)
+	stubAlreadyDownloadedFilesProvider.SetAlreadyDownloadedFiles([]string{})
 }
 
 /*
