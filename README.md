@@ -53,18 +53,18 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main
 - [x] prioritize Ed.Lombardia before others
 - [x] use `completa` just as another prioritization filter (remove it from query)
 - [x] optimize update sh script
-- [ ] prioritize lombardia ed locale on only no complete files
-- [ ] sh script to clean download old folder
+- [x] prioritize lombardia ed locale on only no complete files
 - [ ] month to italian string
 - [ ] add year to search string
 - [ ] try next on download failure: selectFileToDownload should return a prioritized list of files ?
 - [ ] handle GigaByte as size in cli_xdcc_table_parser
-- [ ] take another random file on many files with same name (already downloaded)
+- [ ] take another random file on many files with same name (already downloaded) ?
+- [ ] [refactor] decouple AlreadyDownloadedFilesProvider from IrcFilePrioritizer
 - [x] [refactor] extract download operation in XdccBridge
-- [ ] [refactor] improve readability on selectFileToDownload: try filter & download on too much filter
+- [x] [refactor] improve readability on selectFileToDownload: try filter & download on too much filter
 - [x] [refactor] add CliXdccBridge integration tests for Download function
 - [ ] [refactor] add FileSystemAlreadyDownloadedFilesProvider integration tests for List function
 - [ ] [refactor] replace CliXdccBridge#search with an http implementation (direct fetch from xdcc.eu/search.php?searchkey=query)
-- [ ] [refactor] add unit tests for SmallestFrom([]IrcFile) function
+- [x] [refactor] add unit tests for SmallestFrom([]IrcFile) function
 - [x] [refactor] remove duplication on env variables reading: move in main and inject?
 - [x] [refactor] download folder path as env variable
