@@ -35,6 +35,16 @@ func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
 		},
 		func(file IrcFile) bool {
 			var name = strings.ToLower(file.Name)
+			return strings.Contains(name, "ed.completa") || strings.Contains(name, "ed..completa")
+		},
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
+			return strings.Contains(name, "completa") &&
+				strings.Contains(name, "provvisoria") &&
+				!strings.Contains(name, "ed")
+		},
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
 			return strings.Contains(name, "provvisoria") && !strings.Contains(name, "ed")
 		},
 		func(file IrcFile) bool {
