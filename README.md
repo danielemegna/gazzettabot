@@ -59,7 +59,7 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main
 - [ ] try next on download failure: selectFileToDownload should return a prioritized list of files ?
 - [ ] handle GigaByte as size in cli_xdcc_table_parser
 - [ ] take another random file on many files with same name (already downloaded) ?
-- [ ] [refactor] decouple AlreadyDownloadedFilesProvider from IrcFilePrioritizer
+- [x] [refactor] decouple AlreadyDownloadedFilesProvider from IrcFilePrioritizer
 - [x] [refactor] extract download operation in XdccBridge
 - [x] [refactor] improve readability on selectFileToDownload: try filter & download on too much filter
 - [x] [refactor] add CliXdccBridge integration tests for Download function

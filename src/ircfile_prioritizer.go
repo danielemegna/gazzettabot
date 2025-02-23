@@ -1,7 +1,6 @@
 package gazzettabot
 
 import (
-	"github.com/samber/lo"
 	"log"
 	"slices"
 	"strings"
@@ -12,19 +11,9 @@ type IrcFilePrioritizer struct {
 }
 
 func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
-	var alreadyDownloadedFilenames = this.AlreadyDownloadedFilesProvider.List()
-	var noAlreadyDownloaded = lo.Filter(files, func(file IrcFile, _ int) bool {
-		return !slices.Contains(alreadyDownloadedFilenames, file.Name)
-	})
-
-	if len(noAlreadyDownloaded) == 0 {
-		log.Println("Cannot find new files to download!")
-		return noAlreadyDownloaded
-	}
-
-	log.Printf("Sorting %d new found files ...", len(noAlreadyDownloaded))
+	log.Printf("Sorting %d found files ...", len(files))
 	var predicatesByImportance = predicatesByImportance()
-	return sortByPredicates(noAlreadyDownloaded, predicatesByImportance)
+	return sortByPredicates(files, predicatesByImportance)
 }
 
 func predicatesByImportance() []func(file IrcFile) bool {
