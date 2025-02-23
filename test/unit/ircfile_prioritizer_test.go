@@ -81,9 +81,9 @@ func TestFiftyShadesOfCompletaNonLocale(t *testing.T) {
 
 	var expected = []IrcFile{
 		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.definitiva.pdf", SizeInMegaByte: 30},
-		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 20},
 		{Name: "La.Gazzetta.dello.Sport.Ed.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 10},
 		{Name: "La.Gazzetta.dello.Sport.Ed..COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 15},
+		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 20},
 	}
 	assert.Equal(t, expected, actual)
 }

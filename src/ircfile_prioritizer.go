@@ -27,6 +27,47 @@ func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
 	return sortByPredicates(noAlreadyDownloaded, predicatesByImportance)
 }
 
+func predicatesByImportance() []func(file IrcFile) bool {
+	var isDefinitiva = func(fileName string) bool { return strings.Contains(fileName, "definitiva") }
+	var isCompleta = func(fileName string) bool { return strings.Contains(fileName, "completa") }
+	var isProvvisoria = func(fileName string) bool { return strings.Contains(fileName, "provvisoria") }
+	var isEdizioneLocaleLombardia = func(fileName string) bool { return strings.Contains(fileName, "lombardia") }
+	var isEdizioneLocale = func(fileName string) bool {
+		return strings.Contains(fileName, "ed") &&
+			!strings.Contains(fileName, "ed.completa") &&
+			!strings.Contains(fileName, "ed..completa")
+	}
+
+	return []func(file IrcFile) bool{
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
+			return isDefinitiva(name) && isCompleta(name) && !isEdizioneLocale(name)
+		},
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
+			return strings.Contains(name, "completa") && !isProvvisoria(name) && !isEdizioneLocale(name)
+		},
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
+			return isCompleta(name) && isProvvisoria(name) && !isEdizioneLocale(name)
+		},
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
+			return isProvvisoria(name) && !isEdizioneLocale(name)
+		},
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
+			return isEdizioneLocaleLombardia(name) && isCompleta(name)
+		},
+		func(file IrcFile) bool {
+			var name = strings.ToLower(file.Name)
+			return isEdizioneLocaleLombardia(name) && !isProvvisoria(name)
+		},
+		func(file IrcFile) bool { return isEdizioneLocaleLombardia(strings.ToLower(file.Name)) },
+		func(file IrcFile) bool { return !isProvvisoria(strings.ToLower(file.Name)) },
+	}
+}
+
 func sortByPredicates(rest []IrcFile, predicates []func(file IrcFile) bool) []IrcFile {
 	var prioritized = []IrcFile{}
 	for _, predicate := range predicates {
@@ -38,52 +79,11 @@ func sortByPredicates(rest []IrcFile, predicates []func(file IrcFile) bool) []Ir
 	return append(prioritized, rest...)
 }
 
-func predicatesByImportance() []func(file IrcFile) bool {
-	return []func(file IrcFile) bool{
-		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "definitiva") &&
-				strings.Contains(name, "completa") &&
-				!strings.Contains(name, "ed")
-		},
-		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "completa") &&
-				!strings.Contains(name, "provvisoria") &&
-				!strings.Contains(name, "ed")
-		},
-		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "ed.completa") || strings.Contains(name, "ed..completa")
-		},
-		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "completa") &&
-				strings.Contains(name, "provvisoria") &&
-				!strings.Contains(name, "ed")
-		},
-		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "provvisoria") && !strings.Contains(name, "ed")
-		},
-		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "lombardia") && strings.Contains(name, "completa")
-		},
-		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "lombardia") && !strings.Contains(name, "provvisoria")
-		},
-		func(file IrcFile) bool { return strings.Contains(strings.ToLower(file.Name), "lombardia") },
-		func(file IrcFile) bool { return !strings.Contains(strings.ToLower(file.Name), "provvisoria") },
-	}
-}
-
-func chunkByPredicate(files []IrcFile, prioritizationPredicate func(IrcFile) bool) ([]IrcFile, []IrcFile) {
+func chunkByPredicate(files []IrcFile, predicate func(IrcFile) bool) ([]IrcFile, []IrcFile) {
 	var matching = []IrcFile{}
 	var nonMatching = []IrcFile{}
 	for _, file := range files {
-		if prioritizationPredicate(file) {
+		if predicate(file) {
 			matching = append(matching, file)
 			continue
 		}
