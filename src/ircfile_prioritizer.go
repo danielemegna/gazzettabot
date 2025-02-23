@@ -2,6 +2,7 @@ package gazzettabot
 
 import (
 	"github.com/samber/lo"
+	"log"
 	"slices"
 	"strings"
 )
@@ -17,10 +18,28 @@ func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
 	})
 
 	if len(noAlreadyDownloaded) == 0 {
+		log.Println("Cannot find new files to download!")
 		return noAlreadyDownloaded
 	}
 
-	var predicates = []func(file IrcFile) bool{
+	log.Printf("Sorting %d new found files ...", len(noAlreadyDownloaded))
+	var predicatesByImportance = predicatesByImportance()
+	return sortByPredicates(noAlreadyDownloaded, predicatesByImportance)
+}
+
+func sortByPredicates(rest []IrcFile, predicates []func(file IrcFile) bool) []IrcFile {
+	var prioritized = []IrcFile{}
+	for _, predicate := range predicates {
+		var toPrioritize, toUnderrate = chunkByPredicate(rest, predicate)
+		prioritized = append(prioritized, sortBySize(toPrioritize)...)
+		rest = toUnderrate
+	}
+
+	return append(prioritized, rest...)
+}
+
+func predicatesByImportance() []func(file IrcFile) bool {
+	return []func(file IrcFile) bool{
 		func(file IrcFile) bool {
 			var name = strings.ToLower(file.Name)
 			return strings.Contains(name, "definitiva") &&
@@ -58,17 +77,6 @@ func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
 		func(file IrcFile) bool { return strings.Contains(strings.ToLower(file.Name), "lombardia") },
 		func(file IrcFile) bool { return !strings.Contains(strings.ToLower(file.Name), "provvisoria") },
 	}
-
-	var prioritized = []IrcFile{}
-	var rest = noAlreadyDownloaded
-	for _, predicate := range predicates {
-		var toPrioritize, toUnderrate = chunkByPredicate(rest, predicate)
-		prioritized = append(prioritized, sortBySize(toPrioritize)...)
-		rest = toUnderrate
-	}
-
-	prioritized = append(prioritized, rest...)
-	return prioritized
 }
 
 func chunkByPredicate(files []IrcFile, prioritizationPredicate func(IrcFile) bool) ([]IrcFile, []IrcFile) {
