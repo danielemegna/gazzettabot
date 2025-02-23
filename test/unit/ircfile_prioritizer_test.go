@@ -88,17 +88,17 @@ func TestFiftyShadesOfCompletaNonLocale(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestPrioritizeLombardiaAsEdLocale(t *testing.T) {
+func TestPrioritizeLombardiaAsEdLocaleDespiteSize(t *testing.T) {
 	var files = []IrcFile{
 		{Name: "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.Febbraio.2025.pdf"},
 		{Name: "La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.21.febbraio.2025.pdf"},
-		{Name: "La.Gazzetta.dello.Sport.Ed.Lombardia.COMPLETA.21.Febbraio.2025.pdf"},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Lombardia.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 100},
 	}
 
 	var actual = prioritizer.SortGazzettaFiles(files)
 
 	var expected = []IrcFile{
-		{Name: "La.Gazzetta.dello.Sport.Ed.Lombardia.COMPLETA.21.Febbraio.2025.pdf"},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Lombardia.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 100},
 		{Name: "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.Febbraio.2025.pdf"},
 		{Name: "La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.21.febbraio.2025.pdf"},
 	}
@@ -173,6 +173,25 @@ func TestEdCompletaShouldBePrioritized(t *testing.T) {
 		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf"},
 		{Name: "La.Gazzetta.dello.Sport.Ed.Lombardia.COMPLETA.21.Febbraio.2025.pdf"},
 		{Name: "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.febbraio.2025.pdf"},
+	}
+	assert.Equal(t, expected, actual)
+}
+
+func TestSortNonLombardiaEdLocaliBySize(t *testing.T) {
+	var files = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 40},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.21.febbraio.2025.pdf", SizeInMegaByte: 20},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Sicilia.e.Calabria.21.Febbraio.2025.pdf", SizeInMegaByte: 30},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Verona.21.Febbraio.2025.pdf", SizeInMegaByte: 10},
+	}
+
+	var actual = prioritizer.SortGazzettaFiles(files)
+
+	var expected = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.Ed.Verona.21.Febbraio.2025.pdf", SizeInMegaByte: 10},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Cagliari.COMPLETA.21.febbraio.2025.pdf", SizeInMegaByte: 20},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Sicilia.e.Calabria.21.Febbraio.2025.pdf", SizeInMegaByte: 30},
+		{Name: "La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 40},
 	}
 	assert.Equal(t, expected, actual)
 }

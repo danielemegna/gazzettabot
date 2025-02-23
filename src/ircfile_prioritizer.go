@@ -60,12 +60,11 @@ func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
 	}
 
 	var prioritized = []IrcFile{}
-
 	var rest = noAlreadyDownloaded
 	for _, predicate := range predicates {
 		var toPrioritize, toUnderrate = chunkByPredicate(rest, predicate)
+		prioritized = append(prioritized, sortBySize(toPrioritize)...)
 		rest = toUnderrate
-		prioritized = append(prioritized, toPrioritize...)
 	}
 
 	prioritized = append(prioritized, rest...)
@@ -83,7 +82,7 @@ func chunkByPredicate(files []IrcFile, prioritizationPredicate func(IrcFile) boo
 		nonMatching = append(nonMatching, file)
 	}
 
-	return sortBySize(matching), sortBySize(nonMatching)
+	return matching, nonMatching
 }
 
 func sortBySize(files []IrcFile) []IrcFile {
