@@ -2,12 +2,10 @@ package main
 
 import (
 	. "danielemegna/gazzettabot/src"
-	"fmt"
 	"github.com/samber/lo"
 	"log"
 	"os"
 	"slices"
-	"strconv"
 	"time"
 )
 
@@ -26,8 +24,7 @@ var ircFilePrioritizer = IrcFilePrioritizer{}
 func main() {
 	log.Println("==== Starting Gazzetta Bot")
 
-	var todayDay = time.Now().Day()
-	var searchQuery = "Gazzetta dello Sport " + strconv.Itoa(todayDay) + " Febbraio -" + generateTimestampID()
+	var searchQuery = GazzettaDelloSportSearchQueryFor(time.Now())
 	var foundFiles = xdccBridge.Search(searchQuery)
 
 	var noAlreadyDownloaded = filterAlreadyDownloadedFiles(foundFiles)
@@ -48,11 +45,6 @@ func filterAlreadyDownloadedFiles(files []IrcFile) []IrcFile {
 	return lo.Filter(files, func(file IrcFile, _ int) bool {
 		return !slices.Contains(alreadyDownloadedFilenames, file.Name)
 	})
-}
-
-func generateTimestampID() string {
-	var unixNano = fmt.Sprintf("%d", time.Now().UnixNano())
-	return unixNano[len(unixNano)-6:]
 }
 
 func getFromEnv(varName string) string {
