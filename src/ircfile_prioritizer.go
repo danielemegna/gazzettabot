@@ -1,6 +1,7 @@
 package gazzettabot
 
 import (
+	"github.com/samber/lo"
 	"log"
 	"slices"
 	"strings"
@@ -20,12 +21,13 @@ func predicatesByImportance() []func(file IrcFile) bool {
 	var isDefinitiva = func(fileName string) bool { return strings.Contains(fileName, "definitiva") }
 	var isCompleta = func(fileName string) bool { return strings.Contains(fileName, "completa") }
 	var isProvvisoria = func(fileName string) bool { return strings.Contains(fileName, "provvisoria") }
-	var isEdizioneLocaleLombardia = func(fileName string) bool { return strings.Contains(fileName, "lombardia") }
 	var isEdizioneLocale = func(fileName string) bool {
-		return strings.Contains(fileName, "ed") &&
-			!strings.Contains(fileName, "ed.completa") &&
-			!strings.Contains(fileName, "ed..completa")
+		var localiKeywords = []string{"bologna", "cagliari", "lombardia", "puglia", "roma", "sicilia", "verona"}
+		return lo.SomeBy(localiKeywords, func(localeKeyword string) bool {
+			return strings.Contains(fileName, localeKeyword)
+		})
 	}
+	var isEdizioneLocaleLombardia = func(fileName string) bool { return strings.Contains(fileName, "lombardia") }
 
 	return []func(file IrcFile) bool{
 		func(file IrcFile) bool {
