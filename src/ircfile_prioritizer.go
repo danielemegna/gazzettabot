@@ -34,7 +34,7 @@ func predicatesByImportance() []func(file IrcFile) bool {
 		},
 		func(file IrcFile) bool {
 			var name = strings.ToLower(file.Name)
-			return strings.Contains(name, "completa") && !isProvvisoria(name) && !isEdizioneLocale(name)
+			return isCompleta(name) && !isProvvisoria(name) && !isEdizioneLocale(name)
 		},
 		func(file IrcFile) bool {
 			var name = strings.ToLower(file.Name)
