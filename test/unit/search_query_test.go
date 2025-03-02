@@ -33,5 +33,5 @@ func TestGenerateWithKnownDate(t *testing.T) {
 func TestGenerateWithNowDate(t *testing.T) {
 	var searchQuery = GazzettaDelloSportSearchQueryFor(time.Now())
 	assert.Greater(t, len(searchQuery), 30)
-	assert.Regexp(t, `^Gazzetta dello Sport .\d{2}. \S+ -\d{6}$`, searchQuery)
+	assert.Regexp(t, `^Gazzetta dello Sport .\d{1,2}. \S+ -\d{6}$`, searchQuery)
 }
