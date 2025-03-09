@@ -26,12 +26,13 @@ func TestSearchWithSomeResults(t *testing.T) {
 	assert.Contains(t, files[0].Url, "irc://")
 }
 
-func TestDownloadFile(t *testing.T) {
+func TestDownloadFileWithSuccess(t *testing.T) {
 	var ircFileUrl = "irc://irc.irc-files.org/#FaNtAsYlAnD/FaNtAsYlAnD|AnImE|01/3112"
 	var expectedDownloadedFilename = "Star.Wars.Rebels.3x20.Ultimo.Atto.Prima.Parte.ITA.ENG.DLMux.XviD-Pir8.srt"
 
-	bridge.Download(ircFileUrl)
+	var result = bridge.Download(ircFileUrl)
 
+	assert.True(t, result, "Returned value should be true")
 	var downloadFolder = os.Getenv("DOWNLOAD_FOLDER")
 	var expectedDownloadedFilepath = downloadFolder + "/" + expectedDownloadedFilename
 	var fileInfo, err = os.Stat(expectedDownloadedFilepath)
@@ -39,4 +40,21 @@ func TestDownloadFile(t *testing.T) {
 	assert.Equal(t, int64(175), fileInfo.Size())
 	err = os.Remove(downloadFolder + "/" + expectedDownloadedFilename)
 	assert.Nil(t, err, "Cannot delete downloaded file")
+}
+
+func TestDownloadFileReturnsFalseOnTimeout(t *testing.T) {
+	t.Skip("Very slow test, it use the timeout - todo move it in env var")
+	var ircFileUrl = "irc://irc.openjoke.org/#William&Carola/WeC|EdIcOLa|01/3010"
+	var result = bridge.Download(ircFileUrl)
+	assert.False(t, result, "Returned value should be false")
+}
+
+func TestDownloadFileReturnsFalseOnError(t *testing.T) {
+	var ircFileUrl = "irc://irc.org/#channel/botname/malfomed"
+	var result = bridge.Download(ircFileUrl)
+	assert.False(t, result, "Returned value should be false")
+
+	ircFileUrl = "malformed"
+	result = bridge.Download(ircFileUrl)
+	assert.False(t, result, "Returned value should be false")
 }
