@@ -27,8 +27,8 @@ func TestSearchWithSomeResults(t *testing.T) {
 }
 
 func TestDownloadFile(t *testing.T) {
-	var ircFileUrl = "irc://irc.arabaphenix.it/#arabafenice/ArA|Ebook|01/448"
-	var expectedDownloadedFilename = "EBOOK.Doctor.X..Il.Tocco.Invisibile.2024.epub.rar"
+	var ircFileUrl = "irc://irc.irc-files.org/#FaNtAsYlAnD/FaNtAsYlAnD|AnImE|01/3112"
+	var expectedDownloadedFilename = "Star.Wars.Rebels.3x20.Ultimo.Atto.Prima.Parte.ITA.ENG.DLMux.XviD-Pir8.srt"
 
 	bridge.Download(ircFileUrl)
 
@@ -36,7 +36,7 @@ func TestDownloadFile(t *testing.T) {
 	var expectedDownloadedFilepath = downloadFolder + "/" + expectedDownloadedFilename
 	var fileInfo, err = os.Stat(expectedDownloadedFilepath)
 	assert.Nil(t, err, "Cannot find expected downloaded file")
-	assert.Equal(t, int64(51511), fileInfo.Size())
-	err = os.Remove(downloadFolder + "/EBOOK.Doctor.X..Il.Tocco.Invisibile.2024.epub.rar")
+	assert.Equal(t, int64(175), fileInfo.Size())
+	err = os.Remove(downloadFolder + "/" + expectedDownloadedFilename)
 	assert.Nil(t, err, "Cannot delete downloaded file")
 }
