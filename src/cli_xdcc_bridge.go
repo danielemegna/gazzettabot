@@ -26,7 +26,7 @@ func (this CliXdccBridge) DownloadOneOf(ircFiles []IrcFile) {
 
 	for _, fileToDownload := range ircFiles {
 		log.Println("File selected for download: " + fileToDownload.Name)
-		var successfullyDownloaded = this.Download(fileToDownload.Url)
+		var successfullyDownloaded = this.downloadIrcUrl(fileToDownload.Url)
 		if successfullyDownloaded {
 			break
 		}
@@ -34,7 +34,7 @@ func (this CliXdccBridge) DownloadOneOf(ircFiles []IrcFile) {
 	}
 }
 
-func (this CliXdccBridge) Download(ircFileUrl string) bool {
+func (this CliXdccBridge) downloadIrcUrl(ircFileUrl string) bool {
 	log.Println("Downloading file " + ircFileUrl + " ...")
 
 	var maxDurationInSeconds = 60
