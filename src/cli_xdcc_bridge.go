@@ -21,6 +21,14 @@ func (this CliXdccBridge) Search(query string) []IrcFile {
 	return files
 }
 
+func (this CliXdccBridge) DownloadOneOf(ircFiles []IrcFile) {
+	log.Printf("Downloading one of %d files ...\n", len(ircFiles))
+
+	var fileToDownload = ircFiles[0]
+	log.Println("File selected for download: " + fileToDownload.Name)
+	this.Download(fileToDownload.Url)
+}
+
 func (this CliXdccBridge) Download(ircFileUrl string) bool {
 	log.Println("Downloading file " + ircFileUrl + " ...")
 
@@ -41,7 +49,7 @@ func (this CliXdccBridge) Download(ircFileUrl string) bool {
 		return false
 	}
 
-	log.Println("Download completed!")
+	log.Println("Download of " + ircFileUrl + " completed!")
 	return true
 }
 

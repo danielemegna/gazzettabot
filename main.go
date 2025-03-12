@@ -30,9 +30,7 @@ func main() {
 	var noAlreadyDownloaded = filterAlreadyDownloadedFiles(foundFiles)
 	if len(noAlreadyDownloaded) > 0 {
 		var prioritizedFiles = ircFilePrioritizer.SortGazzettaFiles(noAlreadyDownloaded)
-		var fileToDownload = prioritizedFiles[0]
-		log.Println("File selected for download: " + fileToDownload.Name)
-		xdccBridge.Download(fileToDownload.Url)
+		xdccBridge.DownloadOneOf(prioritizedFiles)
 	} else {
 		log.Println("Cannot find new files to download!")
 	}

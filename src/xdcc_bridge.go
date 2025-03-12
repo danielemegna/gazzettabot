@@ -8,6 +8,7 @@ import (
 
 type XdccBridge interface {
 	Search(query string) []IrcFile
+	DownloadOneOf(ircFiles []IrcFile)
 	Download(ircFileUrl string) bool
 }
 
