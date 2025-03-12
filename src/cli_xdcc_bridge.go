@@ -24,7 +24,7 @@ func (this CliXdccBridge) Search(query string) []IrcFile {
 func (this CliXdccBridge) Download(ircFileUrl string) bool {
 	log.Println("Downloading file " + ircFileUrl + " ...")
 
-	var maxDurationInSeconds = 120
+	var maxDurationInSeconds = 60
 	var timeout = time.Duration(maxDurationInSeconds) * time.Second
 	var contextWithTimeout, cancelFn = context.WithTimeout(context.Background(), timeout)
 	defer cancelFn()
