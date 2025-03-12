@@ -27,34 +27,50 @@ func TestSearchWithSomeResults(t *testing.T) {
 }
 
 func TestDownloadFileWithSuccess(t *testing.T) {
-	var ircFileUrl = "irc://irc.irc-files.org/#FaNtAsYlAnD/FaNtAsYlAnD|AnImE|01/3112"
-	var expectedDownloadedFilename = "Star.Wars.Rebels.3x20.Ultimo.Atto.Prima.Parte.ITA.ENG.DLMux.XviD-Pir8.srt"
+	var ircFile = IrcFile{
+		Name: "Star.Wars.Rebels.3x20.Ultimo.Atto.Prima.Parte.ITA.ENG.DLMux.XviD-Pir8.srt",
+		Url:  "irc://irc.irc-files.org/#FaNtAsYlAnD/FaNtAsYlAnD|AnImE|01/3112",
+	}
 
-	var result = bridge.Download(ircFileUrl)
+	bridge.DownloadOneOf([]IrcFile{ircFile})
 
-	assert.True(t, result, "Returned value should be true")
+	assertAndDeleteDonwloadedFile(t, ircFile, 175)
+}
+
+func TestDownloadNextFileOnUnreachabileFile(t *testing.T) {
+	t.Skip("Very slow test, it use the timeout - todo move it in env var")
+	var validIrcFile = IrcFile{
+		Name: "Naruto.Naruto.107.-.Sasuke.contro.Naruto.srt",
+		Url:  "irc://irc.irc-files.org/#FaNtAsYlAnD/FaNtAsYlAnD|AnImE|01/4919",
+	}
+	var ircFiles = []IrcFile{
+		{
+			Name: "Malformed.url",
+			Url:  "malformed",
+		},
+		{
+			Name: "Malformed.irc.url",
+			Url:  "irc://irc.org/#channel/botname/malfomed",
+		},
+		{
+			Name: "Unreachabile.File.pdf",
+			Url:  "irc://irc.openjoke.org/#TILT/TLT|EDICOLA|01/1190",
+		},
+		validIrcFile,
+	}
+
+	bridge.DownloadOneOf(ircFiles)
+
+	assertAndDeleteDonwloadedFile(t, validIrcFile, 16045)
+}
+
+func assertAndDeleteDonwloadedFile(t *testing.T, ircFile IrcFile, expectedSizeInBytes int) {
 	var downloadFolder = os.Getenv("DOWNLOAD_FOLDER")
-	var expectedDownloadedFilepath = downloadFolder + "/" + expectedDownloadedFilename
+	var expectedDownloadedFilepath = downloadFolder + "/" + ircFile.Name
 	var fileInfo, err = os.Stat(expectedDownloadedFilepath)
 	assert.Nil(t, err, "Cannot find expected downloaded file")
-	assert.Equal(t, int64(175), fileInfo.Size())
-	err = os.Remove(downloadFolder + "/" + expectedDownloadedFilename)
+	assert.NotNil(t, fileInfo, "Cannot find expected downloaded file")
+	assert.Equal(t, int64(expectedSizeInBytes), fileInfo.Size())
+	err = os.Remove(downloadFolder + "/" + ircFile.Name)
 	assert.Nil(t, err, "Cannot delete downloaded file")
-}
-
-func TestDownloadFileReturnsFalseOnTimeout(t *testing.T) {
-	t.Skip("Very slow test, it use the timeout - todo move it in env var")
-	var ircFileUrl = "irc://irc.openjoke.org/#William&Carola/WeC|EdIcOLa|01/3010"
-	var result = bridge.Download(ircFileUrl)
-	assert.False(t, result, "Returned value should be false")
-}
-
-func TestDownloadFileReturnsFalseOnError(t *testing.T) {
-	var ircFileUrl = "irc://irc.org/#channel/botname/malfomed"
-	var result = bridge.Download(ircFileUrl)
-	assert.False(t, result, "Returned value should be false")
-
-	ircFileUrl = "malformed"
-	result = bridge.Download(ircFileUrl)
-	assert.False(t, result, "Returned value should be false")
 }
