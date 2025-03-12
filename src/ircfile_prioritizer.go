@@ -7,9 +7,7 @@ import (
 	"strings"
 )
 
-type IrcFilePrioritizer struct {
-	AlreadyDownloadedFilesProvider
-}
+type IrcFilePrioritizer struct {}
 
 func (this IrcFilePrioritizer) SortGazzettaFiles(files []IrcFile) []IrcFile {
 	log.Printf("Sorting %d found files ...", len(files))
