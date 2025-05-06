@@ -55,7 +55,7 @@ $ docker run --rm -v $PWD:/app -w /app golang:1.24.1-alpine go build -o bin/main
 - [x] optimize update sh script
 - [x] prioritize lombardia ed locale on only no complete files
 - [x] month to italian string
-- [ ] add year to search string
+- [x] add year to search string
 - [x] try next on download failure: selectFileToDownload should return a prioritized list of files ?
 - [ ] handle GigaByte as size in cli_xdcc_table_parser
 - [ ] take another random file on many files with same name (already downloaded) ?

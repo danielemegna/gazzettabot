@@ -9,7 +9,8 @@ import (
 func GazzettaDelloSportSearchQueryFor(date time.Time) string {
 	var todayDayString = "." + strconv.Itoa(date.Day()) + "."
 	var todayMonthString = italianNameFor(date.Month())
-	var dateString = todayDayString + " " + todayMonthString
+	var todayYearString = strconv.Itoa(date.Year())
+	var dateString = todayDayString + " " + todayMonthString + " " + todayYearString
 	return "Gazzetta dello Sport " + dateString + " -" + generateTimestampID()
 }
 
