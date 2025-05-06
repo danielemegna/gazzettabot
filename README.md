@@ -12,7 +12,7 @@ $ ./bin/main
 Use temporary container with current directory volume:
 
 ```
-$ docker run --rm -it -v $PWD:/app -w /app golang:1.23.3 bash
+$ docker run --rm -it -v $PWD:/app -w /app golang:1.24.1 bash
 # go install github.com/mfridman/tparse@latest
 ```
 
@@ -44,7 +44,7 @@ $ docker exec -it -w /workspaces/$(basename $PWD) <container-name> bash
 Build the executable with a temporary alpine go container:
 
 ```
-$ docker run --rm -v $PWD:/app -w /app golang:1.23.3-alpine go build -o bin/main main.go
+$ docker run --rm -v $PWD:/app -w /app golang:1.24.1-alpine go build -o bin/main main.go
 ```
 
 ### Backlog
