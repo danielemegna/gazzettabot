@@ -19,7 +19,7 @@ func TestSearchWithoutResults(t *testing.T) {
 }
 
 func TestSearchWithSomeResults(t *testing.T) {
-	var files = bridge.Search("gazzetta dello sport completa 8 febbraio")
+	var files = bridge.Search("gazzetta dello sport completa")
 	assert.NotEmpty(t, files)
 	assert.Contains(t, files[0].Name, "Gazzetta.dello.Sport")
 	assert.Greater(t, files[0].SizeInMegaByte, 0)
