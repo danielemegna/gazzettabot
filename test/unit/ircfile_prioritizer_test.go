@@ -250,6 +250,23 @@ func TestPrioritizeDefinitivaOverProvvisoriaWithoutCompleta(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestMilanoAndNapoliAreEdLocali(t *testing.T) {
+	var files = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.Napoli.9.Luglio.2026.pdf", SizeInMegaByte: 61},
+		{Name: "La.Gazzetta.dello.Sport.Milano.9.Luglio.2026.pdf", SizeInMegaByte: 62},
+		{Name: "La.Gazzetta.dello.Sport.9.Luglio.2026.versione.provvisoria.pdf", SizeInMegaByte: 61},
+	}
+
+	var actual = prioritizer.SortGazzettaFiles(files)
+
+	var expected = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.9.Luglio.2026.versione.provvisoria.pdf", SizeInMegaByte: 61},
+		{Name: "La.Gazzetta.dello.Sport.Milano.9.Luglio.2026.pdf", SizeInMegaByte: 62},
+		{Name: "La.Gazzetta.dello.Sport.Napoli.9.Luglio.2026.pdf", SizeInMegaByte: 61},
+	}
+	assert.Equal(t, expected, actual)
+}
+
 /*
 	Cases we faced:
 	+La.Gazzetta.dello.Sport.9.Luglio.2026.versione.provvisoria.pdf
@@ -258,6 +275,7 @@ func TestPrioritizeDefinitivaOverProvvisoriaWithoutCompleta(t *testing.T) {
 	+La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.definitiva.pdf
 	+La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf
 	+La.Gazzetta.dello.Sport.Ed..COMPLETA.21.Febbraio.2025.pdf
+	+La.Gazzetta.dello.Sport.bianca.9.Luglio.2026.pdf
 	+La.Gazzetta.dello.Sport.Ed.Bologna.COMPLETA.21.febbraio.2025.pdf
 	+La.Gazzetta.dello.Sport.Ed.COMPLETA.21.Febbraio.2025.pdf
 	+La.Gazzetta.dello.Sport.Ed.COMPLETA.21.Febbraio.2025.versione.provvisoria.pdf
@@ -271,6 +289,8 @@ func TestPrioritizeDefinitivaOverProvvisoriaWithoutCompleta(t *testing.T) {
 	+La.Gazzetta.dello.Sport.Verona.COMPLETA.2.Marzo.2025.pdf
 	+La.Gazzetta.dello.Sport.Cagliari.COMPLETA.2.Marzo.2025.pdf
 	+La.Gazzetta.dello.Sport.Lombardia.COMPLETA.2.Marzo.2025.pdf
+	+La.Gazzetta.dello.Sport.Milano.9.Luglio.2026.pdf
+	+La.Gazzetta.dello.Sport.Napoli.9.Luglio.2026.pdf
 	+La.Gazzetta.dello.Sport.Puglia.e.Basilicata.COMPLETA.2.Marzo.2025.pdf
 	+La.Gazzetta.dello.Sport.Sicilia.e.Calabria.COMPLETA.2.Marzo.2025.pdf
 */
