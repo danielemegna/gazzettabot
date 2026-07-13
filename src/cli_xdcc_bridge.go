@@ -49,8 +49,12 @@ func (this CliXdccBridge) downloadIrcUrl(ircFileUrl string) bool {
 	)
 	var out, err = command.Output()
 	var commandOutput = string(out)
-	if err != nil || isErrorOutput(commandOutput) {
+	if err != nil {
 		log.Println("Error during file download! - ", err)
+		return false
+	}
+	if isErrorOutput(commandOutput) {
+		log.Println("Error during file download! - ", commandOutput)
 		return false
 	}
 
