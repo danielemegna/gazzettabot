@@ -70,5 +70,6 @@ func (this CliXdccBridge) execSearch(query string) string {
 
 func isErrorOutput(output string) bool {
 	return strings.Contains(output, "no valid irc url") ||
-		strings.Contains(output, "invalid syntax")
+		strings.Contains(output, "invalid syntax") ||
+		strings.Contains(output, "connection refused")
 }
