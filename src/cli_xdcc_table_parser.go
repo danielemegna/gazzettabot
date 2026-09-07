@@ -17,9 +17,9 @@ func ParseTable(tableString string) []IrcFile {
 	var rowsWithoutHeaders = rows[3:]
 	var foundFiles = rowsWithoutHeaders[:len(rowsWithoutHeaders)-2]
 	return lo.Map(foundFiles, func(row string, _ int) IrcFile {
-		var r, _ = regexp.Compile(`\|\s*(\S+)\s*\|\s*(\d+)MB\s*\|\s+(\S+)\s+\|`)
+		var r, _ = regexp.Compile(`\|\s*(\S+)\s*\|\s*(\d+\.?\d*)\w+\s*\|\s+(\S+)\s+\|`)
 		var matches = r.FindStringSubmatch(row)
-		var sizeInMegaByte, _ = strconv.Atoi(matches[2])
+		var sizeInMegaByte, _ = strconv.ParseFloat(matches[2], 64)
 		return IrcFile{
 			Name:           matches[1],
 			SizeInMegaByte: sizeInMegaByte,

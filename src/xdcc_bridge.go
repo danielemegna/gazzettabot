@@ -13,13 +13,13 @@ type XdccBridge interface {
 
 type IrcFile struct {
 	Name           string
-	SizeInMegaByte int
+	SizeInMegaByte float64
 	Url            string
 }
 
 func IrcFilesToString(files []IrcFile) string {
 	var filesToStrings = lo.Map(files, func(file IrcFile, _ int) string {
-		return "  " + file.Name + " [" + strconv.Itoa(file.SizeInMegaByte) + "MB - " + file.Url + "]\n"
+		return "  " + file.Name + " [" + strconv.FormatFloat(file.SizeInMegaByte, 'f', 2, 32) + "MB - " + file.Url + "]\n"
 	})
 	return "[\n" + strings.Join(filesToStrings, "") + "]"
 }

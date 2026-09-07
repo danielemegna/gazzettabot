@@ -1,10 +1,12 @@
 package gazzettabot
 
 import (
-	"github.com/samber/lo"
+	"cmp"
 	"log"
 	"slices"
 	"strings"
+
+	"github.com/samber/lo"
 )
 
 type IrcFilePrioritizer struct {}
@@ -91,7 +93,7 @@ func chunkByPredicate(files []IrcFile, predicate func(IrcFile) bool) ([]IrcFile,
 func sortBySize(files []IrcFile) []IrcFile {
 	var cloneOfFiles = slices.Clone(files)
 	slices.SortFunc(cloneOfFiles, func(a IrcFile, b IrcFile) int {
-		return a.SizeInMegaByte - b.SizeInMegaByte
+		return cmp.Compare(a.SizeInMegaByte, b.SizeInMegaByte)
 	})
 	return cloneOfFiles
 }
