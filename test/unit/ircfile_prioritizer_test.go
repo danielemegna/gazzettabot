@@ -72,6 +72,7 @@ func TestFiftyShadesOfCompletaNonLocale(t *testing.T) {
 	var files = []IrcFile{
 		{Name: "La.Gazzetta.dello.Sport.Ed.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 10},
 		{Name: "La.Gazzetta.dello.Sport.Ed..COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 15},
+		{Name: "La.Gazzetta.dello.Sport.21.Febbraio.2025.pdf", SizeInMegaByte: 5},
 		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 20},
 		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.versione.definitiva.pdf", SizeInMegaByte: 30},
 	}
@@ -83,6 +84,7 @@ func TestFiftyShadesOfCompletaNonLocale(t *testing.T) {
 		{Name: "La.Gazzetta.dello.Sport.Ed.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 10},
 		{Name: "La.Gazzetta.dello.Sport.Ed..COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 15},
 		{Name: "La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf", SizeInMegaByte: 20},
+		{Name: "La.Gazzetta.dello.Sport.21.Febbraio.2025.pdf", SizeInMegaByte: 5},
 	}
 	assert.Equal(t, expected, actual)
 }
@@ -269,8 +271,28 @@ func TestMilanoAndNapoliAreEdLocali(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestPrioritizeNoTagOverLocaleAndProvvisoria(t *testing.T) {
+	var files = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.Milano.10.Ottobre.2026.pdf", SizeInMegaByte: 61},
+		{Name: "La.Gazzetta.dello.Sport.Napoli.10.Ottobre.2026.pdf", SizeInMegaByte: 61},
+		{Name: "La.Gazzetta.dello.Sport.10.Ottobre.2026.versione.provvisoria.pdf", SizeInMegaByte: 44},
+		{Name: "La.Gazzetta.dello.Sport.10.Ottobre.2026.pdf", SizeInMegaByte: 15},
+	}
+
+	var actual = prioritizer.SortGazzettaFiles(files)
+
+	var expected = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.10.Ottobre.2026.versione.provvisoria.pdf", SizeInMegaByte: 44},
+		{Name: "La.Gazzetta.dello.Sport.Milano.10.Ottobre.2026.pdf", SizeInMegaByte: 61},
+		{Name: "La.Gazzetta.dello.Sport.10.Ottobre.2026.pdf", SizeInMegaByte: 15},
+		{Name: "La.Gazzetta.dello.Sport.Napoli.10.Ottobre.2026.pdf", SizeInMegaByte: 61},
+	}
+	assert.Equal(t, expected, actual)
+}
+
 /*
 	Cases we faced:
+	+La.Gazzetta.dello.Sport.10.Ottobre.2026.pdf
 	+La.Gazzetta.dello.Sport.9.Luglio.2026.versione.provvisoria.pdf
 	+La.Gazzetta.dello.Sport.9.Luglio.2026.versione.definitiva.pdf
 	+La.Gazzetta.dello.Sport.COMPLETA.21.Febbraio.2025.pdf
