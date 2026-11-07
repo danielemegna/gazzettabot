@@ -21,14 +21,19 @@ func predicatesByImportance() []func(file IrcFile) bool {
 	var isDefinitiva = func(fileName string) bool { return strings.Contains(fileName, "definitiva") }
 	var isCompleta = func(fileName string) bool { return strings.Contains(fileName, "completa") }
 	var isProvvisoria = func(fileName string) bool { return strings.Contains(fileName, "provvisoria") }
+	var isEdizioneLocaleLombardiaOrMilano = func(fileName string) bool {
+		return strings.Contains(fileName, "lombardia") || strings.Contains(fileName, "milano")
+	}
 	var isEdizioneLocale = func(fileName string) bool {
 		var localiKeywords = []string{"bologna", "cagliari", "lombardia", "milano", "napoli", "puglia", "roma", "sicilia", "verona"}
 		return lo.SomeBy(localiKeywords, func(localeKeyword string) bool {
 			return strings.Contains(fileName, localeKeyword)
 		})
 	}
-	var isEdizioneLocaleLombardiaOrMilano = func(fileName string) bool {
-		return strings.Contains(fileName, "lombardia") || strings.Contains(fileName, "milano")
+	var isNoTag = func(fileName string) bool {
+		var lowerFileName = strings.ToLower(fileName)
+		return !isDefinitiva(lowerFileName) && !isCompleta(lowerFileName) &&
+			!isProvvisoria(lowerFileName) && !isEdizioneLocale(lowerFileName)
 	}
 
 	return []func(file IrcFile) bool{
@@ -45,8 +50,7 @@ func predicatesByImportance() []func(file IrcFile) bool {
 			return isCompleta(name) && !isProvvisoria(name) && !isEdizioneLocale(name)
 		},
 		func(file IrcFile) bool {
-			var name = strings.ToLower(file.Name)
-			return !isCompleta(name) && !isProvvisoria(name) && !isEdizioneLocale(name)
+			return isNoTag(file.Name)
 		},
 		func(file IrcFile) bool {
 			var name = strings.ToLower(file.Name)
