@@ -282,9 +282,9 @@ func TestPrioritizeNoTagOverLocaleAndProvvisoria(t *testing.T) {
 	var actual = prioritizer.SortGazzettaFiles(files)
 
 	var expected = []IrcFile{
+		{Name: "La.Gazzetta.dello.Sport.10.Ottobre.2026.pdf", SizeInMegaByte: 15},
 		{Name: "La.Gazzetta.dello.Sport.10.Ottobre.2026.versione.provvisoria.pdf", SizeInMegaByte: 44},
 		{Name: "La.Gazzetta.dello.Sport.Milano.10.Ottobre.2026.pdf", SizeInMegaByte: 61},
-		{Name: "La.Gazzetta.dello.Sport.10.Ottobre.2026.pdf", SizeInMegaByte: 15},
 		{Name: "La.Gazzetta.dello.Sport.Napoli.10.Ottobre.2026.pdf", SizeInMegaByte: 61},
 	}
 	assert.Equal(t, expected, actual)
